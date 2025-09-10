@@ -1,0 +1,43 @@
+<form class="kutu" (ngSubmit)="araciCagir()">
+  <h2>Hoş Geldiniz</h2>
+
+  <label for="surucu">Şoför</label>
+  <select id="surucu" [(ngModel)]="surucu" name="surucu" required>
+    <option value="" disabled selected>Şoför seçin</option>
+    <option *ngFor="let s of suruculer" [value]="s.ad" [disabled]="s.dolu">
+      {{ s.ad }} — {{ s.dolu ? 'DOLU' : 'BOŞ' }}
+    </option>
+  </select>
+
+  <label for="baslangic">Başlangıç Adresi</label>
+  <input id="baslangic" type="text" [(ngModel)]="baslangic" name="baslangic"
+         (ngModelChange)="onAdresDegisti()" placeholder="Örn: Beşiktaş, İstanbul">
+
+  <label for="varis">Varış Adresi</label>
+  <input id="varis" type="text" [(ngModel)]="varis" name="varis"
+         (ngModelChange)="onAdresDegisti()" placeholder="Örn: Kadıköy, İstanbul">
+
+  <label for="mesafe">Mesafe (km)</label>
+  <input id="mesafe" type="number" min="0" step="0.1"
+         [(ngModel)]="mesafeKm" name="mesafeKm" placeholder="Otomatik hesaplanır">
+
+ 
+<div class="butonlar tekli">
+  <button class="genis" type="submit" [disabled]="!surucu || (ucret <= 0)">
+    Aracı Çağır
+  </button>
+</div>
+  <div class="bilgi" *ngIf="isLoading">Mesafe hesaplanıyor...</div>
+  <div class="bilgi" *ngIf="!isLoading && hata"
+       style="border-color:#fca5a5;color:#fecaca;background:#7f1d1d;">
+    {{ hata }}
+  </div>
+  <div class="bilgi" *ngIf="!isLoading && ucret > 0">
+    Mesafe: <strong>{{ mesafeKm | number:'1.0-2' }} km</strong> —
+    Toplam Ücret: <strong>{{ ucret | number:'1.0-2' }} ₺</strong>
+    <span class="ipucu">(km başına 30₺)</span>
+  </div>
+
+  <!-- HARİTA -->
+  <div #mapRef class="harita"></div>
+</form>
